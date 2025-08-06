@@ -34,24 +34,24 @@ CREATE TABLE users(
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE stories (
-story_id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE posts (
+post_id INT NOT NULL AUTO_INCREMENT,
 user_id INT NOT NULL,
 title varchar(255) NOT NULL,
 content TEXT NOT NULL,
 author VARCHAR(50) NOT NULL,
 date_posted DATETIME NOT NULL,
-PRIMARY KEY (story_id),
+PRIMARY KEY (post_id),
 FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE comments (
 comment_id INT AUTO_INCREMENT NOT NULL,
 user_id INT NOT NULL,
-story_id INT NOT NULL,
+post_id INT NOT NULL,
 content TEXT NOT NULL,
 date_posted DATETIME NOT NULL,
 PRIMARY KEY (comment_id),
 FOREIGN KEY (user_id) REFERENCES users(user_id),
-FOREIGN KEY (story_id) REFERENCES stories(story_id)
+FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
