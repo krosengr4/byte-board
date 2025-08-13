@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +91,34 @@ public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 
 	@Override
 	public Comment add(Comment comment) {
+		String query = """
+				INSERT INTO comments (user_id, post_id, content, author, date_posted)
+				VALUES (?, ?, ?, ?, ?);
+				""";
+
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, comment.getUserId());
+			statement.setInt(2, comment.getPostId());
+			statement.setString(3, comment.getContent());
+			statement.setString(4, comment.getAuthor());
+			statement.setTimestamp(5, Timestamp.valueOf(comment.getDatePosted()));
+
+			int rows = statement.executeUpdate();
+			if(rows > 0) {
+				ResultSet key = statement.getGeneratedKeys();
+
+				if(key.next()) {
+					int commentId = key.getInt(1);
+					return getById(commentId);
+				}
+			} else {
+				System.err.println("Could not create new comment!!!");
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 		return null;
 	}
 
