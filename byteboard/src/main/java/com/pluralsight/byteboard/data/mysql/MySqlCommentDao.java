@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,5 +56,16 @@ public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 	@Override
 	public void delete(int commentId) {
 
+	}
+
+	private Comment mapRow(ResultSet result) throws SQLException {
+		int commentId = result.getInt("comment_id");
+		int userId = result.getInt("user_id");
+		int postId = result.getInt("post_id");
+		String content = result.getString("content");
+		String author = result.getString("author");
+		LocalDateTime datePosted = result.getTimestamp("date_posted").toLocalDateTime();
+
+		return new Comment(commentId, userId, postId, content, author, datePosted);
 	}
 }
