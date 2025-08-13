@@ -25,7 +25,20 @@ public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 	@Override
 	public List<Comment> getAll() {
 		List<Comment> commentList = new ArrayList<>();
+		String query = "SELECT * FROM comments;";
 
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+
+			ResultSet results = statement.executeQuery();
+			while(results.next()) {
+				Comment comment = mapRow(results);
+				commentList.add(comment);
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 		return commentList;
 	}
