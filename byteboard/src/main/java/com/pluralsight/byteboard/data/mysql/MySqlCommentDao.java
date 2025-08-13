@@ -2,14 +2,17 @@ package com.pluralsight.byteboard.data.mysql;
 
 import com.pluralsight.byteboard.data.CommentDao;
 import com.pluralsight.byteboard.models.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 
-
+	@Autowired
 	public MySqlCommentDao(DataSource dataSource) {
 		super(dataSource);
 	}
