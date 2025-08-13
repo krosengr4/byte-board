@@ -155,7 +155,24 @@ public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 
 	@Override
 	public void delete(int commentId) {
+		String query = """
+				DELETE FROM comments
+				WHERE comment_id = ?;
+				""";
 
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, commentId);
+
+			int rows = statement.executeUpdate();
+			if(rows > 0)
+				System.out.println("Success! Comment was deleted!");
+			else
+				System.err.println("ERROR! Could not delete the comment!!!");
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private Comment mapRow(ResultSet result) throws SQLException {
