@@ -45,6 +45,25 @@ public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 
 	@Override
 	public Comment getById(int commentId) {
+		String query = """
+				SELECT * FROM comments
+				WHERE comment_id = ?;
+				""";
+
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, commentId);
+
+			ResultSet result = statement.executeQuery();
+			if(result.next()) {
+				return mapRow(result);
+			} else {
+				System.err.println("No comment found with that ID!!!");
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 		return null;
 	}
 
