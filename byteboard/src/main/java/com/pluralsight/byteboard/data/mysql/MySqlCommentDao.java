@@ -123,8 +123,34 @@ public class MySqlCommentDao extends MySqlDaoBase implements CommentDao {
 	}
 
 	@Override
-	public void update(Comment comment) {
+	public void update(Comment comment, int commentId) {
+		String query = """
+				UPDATE comments
+				SET user_id = ?,
+				post_id = ?,
+				content = ?,
+				author = ?,
+				date_posted = ?
+				WHERE comment_id = ?;
+				""";
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, comment.getUserId());
+			statement.setInt(2, comment.getPostId());
+			statement.setString(3, comment.getContent());
+			statement.setString(4, comment.getAuthor());
+			statement.setTimestamp(5, Timestamp.valueOf(comment.getDatePosted()));
+			statement.setInt(6, commentId);
 
+			int rows = statement.executeUpdate();
+			if(rows > 0)
+				System.out.println("Success! Comment was updated!");
+			else
+				System.err.println("ERROR! Could not update the comment!!!");
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
