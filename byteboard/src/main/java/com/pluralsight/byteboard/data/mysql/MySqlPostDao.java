@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +55,16 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 
 	@Override
 	public void delete(int postId) {}
+
+	private Post mapRow(ResultSet result) throws SQLException {
+		int postId = result.getInt("post_id");
+		int user_id = result.getInt("user_id");
+		String title = result.getString("title");
+		String content = result.getString("content");
+		String author = result.getString("author");
+		LocalDateTime datePosted = result.getTimestamp("date_posted").toLocalDateTime();
+
+		return new Post(postId, user_id, title, content, author, datePosted);
+	}
 
 }
