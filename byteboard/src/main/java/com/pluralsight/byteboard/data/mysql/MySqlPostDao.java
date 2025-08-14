@@ -71,7 +71,24 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 	@Override
 	public List<Post> getByUserId(int userId) {
 		List<Post> postList = new ArrayList<>();
+		String query = """
+				SELECT * FROM posts
+				WHERE user_id = ?;
+				""";
 
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, userId);
+
+			ResultSet results = statement.executeQuery();
+			while(results.next()) {
+				Post post = mapRow(results);
+				postList.add(post);
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 		return postList;
 	}
