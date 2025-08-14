@@ -25,7 +25,20 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 	@Override
 	public List<Post> getAll() {
 		List<Post> postList = new ArrayList<>();
+		String query = "SELECT * FROM posts;";
 
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+
+			ResultSet results = statement.executeQuery();
+			while(results.next()) {
+				Post post = mapRow(results);
+				postList.add(post);
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 		return postList;
 	}
@@ -66,5 +79,4 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 
 		return new Post(postId, user_id, title, content, author, datePosted);
 	}
-
 }
