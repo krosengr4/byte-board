@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +92,35 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 
 	@Override
 	public Post add(Post post) {
+		String query = """
+				INSERT INTO posts(user_id, title, content, author, date_posted)
+				VALUES (?, ?, ?, ?, ?);
+				""";
+
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, post.getUserId());
+			statement.setString(2, post.getTitle());
+			statement.setString(3, post.getContent());
+			statement.setString(4, post.getAuthor());
+			statement.setTimestamp(5, Timestamp.valueOf(post.getDatePosted()));
+
+			int rows = statement.executeUpdate();
+			if(rows > 0) {
+				ResultSet key = statement.getGeneratedKeys();
+
+				if(key.next()) {
+					int postId = key.getInt(1);
+					return getById(postId);
+				}
+			} else {
+				System.err.println("ERROR! Could not add the post!!!");
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+
 		return null;
 	}
 
