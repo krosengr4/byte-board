@@ -151,7 +151,25 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 	}
 
 	@Override
-	public void delete(int postId) {}
+	public void delete(int postId) {
+		String query = """
+				DELETE FROM posts
+				WHERE post_id = ?;
+				""";
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, postId);
+
+			int rows = statement.executeUpdate();
+			if (rows > 0)
+				System.out.println("Success the post has been deleted!");
+			else
+				System.err.println("ERROR! Could not delete the post!!");
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private Post mapRow(ResultSet result) throws SQLException {
 		int postId = result.getInt("post_id");
