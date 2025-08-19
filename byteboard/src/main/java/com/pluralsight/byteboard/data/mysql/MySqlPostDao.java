@@ -125,8 +125,29 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 	}
 
 	@Override
-	public void update(Post post) {
+	public void update(Post post, int postId) {
+		String query = """
+				UPDATE posts
+				SET title = ?,
+				content = ?,
+				WHERE postId = ?;
+				""";
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setString(1, post.getTitle());
+			statement.setString(2, post.getContent());
+			statement.setInt(3, postId);
 
+			int rows = statement.executeUpdate();
+			if(rows > 0) {
+				System.out.println("Success! The post has been updated!");
+			} else {
+				System.err.println("ERROR! Could not update the post!!!");
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

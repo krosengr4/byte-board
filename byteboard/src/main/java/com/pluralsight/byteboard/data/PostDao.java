@@ -14,7 +14,7 @@ public interface PostDao {
 
 	Post add(Post post);
 
-	void update(Post post);
+	void update(Post post, int postId);
 
 	void delete(int postId);
 
