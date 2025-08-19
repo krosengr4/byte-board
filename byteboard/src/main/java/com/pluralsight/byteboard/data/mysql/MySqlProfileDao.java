@@ -5,10 +5,9 @@ import com.pluralsight.byteboard.models.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -22,6 +21,26 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
 
 	@Override
 	public Profile getByUserId(int userId) {
+		String query = """
+				SELECT * FROM profiles
+				WHERE user_id = ?;
+				""";
+
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, userId);
+
+			ResultSet result = statement.executeQuery();
+			if(result.next()) {
+				return mapRow(result);
+			} else {
+				System.err.println("Could not find user with that ID!!!");
+			}
+
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+
 		return null;
 	}
 
