@@ -46,7 +46,27 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
 
 	@Override
 	public Profile create(Profile profile) {
-		return null;
+		String query = """
+				INSERT INTO profiles (user_id, first_name, last_name, email, github_link, city, state, date_registered)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+				""";
+
+		try(Connection connection = getConnection()) {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setInt(1, profile.getUserId());
+			statement.setString(2, profile.getFirstName());
+			statement.setString(3, profile.getLastName());
+			statement.setString(4, profile.getEmail());
+			statement.setString(5, profile.getLink());
+			statement.setString(6, profile.getCity());
+			statement.setString(7, profile.getState());
+			statement.setDate(8, Date.valueOf(LocalDate.now()));
+
+			statement.executeUpdate();
+			return profile;
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
