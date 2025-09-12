@@ -5,10 +5,7 @@ import com.pluralsight.byteboard.data.UserDao;
 import com.pluralsight.byteboard.models.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -38,6 +35,14 @@ public class CommentController {
 	}
 
 	// todo: get comments on a specific post
+	@GetMapping("/post/{postId}")
+	public List<Comment> getCommentsForPost(@PathVariable int postId) {
+		try {
+			return commentDao.getByPostId(postId);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
 
 	// todo: get one comment by its ID
 
@@ -46,5 +51,4 @@ public class CommentController {
 	// todo: update a comment
 
 	// todo: delete a comment
-
 }
