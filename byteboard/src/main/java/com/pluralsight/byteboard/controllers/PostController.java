@@ -3,11 +3,13 @@ package com.pluralsight.byteboard.controllers;
 import com.pluralsight.byteboard.data.PostDao;
 import com.pluralsight.byteboard.data.UserDao;
 import com.pluralsight.byteboard.models.Post;
+import com.pluralsight.byteboard.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -53,6 +55,21 @@ public class PostController {
 	}
 
 	// todo: add a post
+	@PostMapping("")
+	public Post addPost(@RequestBody Post post, Principal principal) {
+		try {
+			// Get the ID of the user that is logged in
+			String username = principal.getName();
+			User user = userDao.getByUsername(username);
+			int userId = user.getId();
+
+			post.setUserId(userId);
+			post.setAuthor(username);
+			return postDao.add(post);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
 
 	// todo: update a post
 
