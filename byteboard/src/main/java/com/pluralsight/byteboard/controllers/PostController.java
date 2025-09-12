@@ -72,6 +72,28 @@ public class PostController {
 	}
 
 	// todo: update a post
+	@PutMapping("/{postId}")
+	public void updateStory(@RequestBody Post updatedPost, @PathVariable int postId, Principal principal) {
+		try {
+			// Get the ID of the user that is logged in
+			String username = principal.getName();
+			User user = userDao.getByUsername(username);
+			int userId = user.getId();
+
+			Post post = postDao.getById(postId);
+
+			// Verify post ID exists and it belongs to user logged in
+			if(post != null && userId == post.getUserId()) {
+				updatedPost.setUserId(userId);
+				updatedPost.setPostId(postId);
+				postDao.update(updatedPost, postId);
+			} else {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			}
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
 
 	// todo: delete a post
 
