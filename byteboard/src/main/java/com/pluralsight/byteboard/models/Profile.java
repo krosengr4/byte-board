@@ -13,6 +13,10 @@ public class Profile {
 	String state = "";
 	LocalDate dateRegistered;
 
+	public Profile() {
+
+	}
+
 	public Profile(int userId, String firstName, String lastName, String email, String link, String city, String state, LocalDate dateRegistered) {
 		this.userId = userId;
 		this.firstName = firstName;
