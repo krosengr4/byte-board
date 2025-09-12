@@ -42,9 +42,15 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
 		}
 	}
-
-
 	// todo: get one post by post ID
+	@GetMapping("/{postId}")
+	public Post getPostById(@PathVariable int postId) {
+		try {
+			return postDao.getById(postId);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
 
 	// todo: add a post
 
