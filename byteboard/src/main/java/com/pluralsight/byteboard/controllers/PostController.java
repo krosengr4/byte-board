@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -61,14 +62,16 @@ public class PostController {
 
 			post.setUserId(userId);
 			post.setAuthor(username);
+			post.setDatePosted(LocalDateTime.now());
 			return postDao.add(post);
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+			// throw new RuntimeException(e);
 		}
 	}
 
 	@PutMapping("/{postId}")
-	public void updateStory(@RequestBody Post updatedPost, @PathVariable int postId, Principal principal) {
+	public void updatePost(@RequestBody Post updatedPost, @PathVariable int postId, Principal principal) {
 		try {
 			// Get the ID of the user that is logged in
 			String username = principal.getName();
@@ -87,6 +90,7 @@ public class PostController {
 			}
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+//			throw new RuntimeException(e);
 		}
 	}
 
@@ -107,6 +111,7 @@ public class PostController {
 			}
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+			// throw new RuntimeException(e);
 		}
 	}
 

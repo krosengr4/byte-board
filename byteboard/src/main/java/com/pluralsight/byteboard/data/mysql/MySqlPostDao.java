@@ -129,8 +129,8 @@ public class MySqlPostDao extends MySqlDaoBase implements PostDao {
 		String query = """
 				UPDATE posts
 				SET title = ?,
-				content = ?,
-				WHERE postId = ?;
+				content = ?
+				WHERE post_id = ?;
 				""";
 		try(Connection connection = getConnection()) {
 			PreparedStatement statement = connection.prepareStatement(query);
