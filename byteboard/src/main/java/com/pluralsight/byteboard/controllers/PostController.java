@@ -26,7 +26,6 @@ public class PostController {
 		this.userDao = userDao;
 	}
 
-	// todo: get all posts
 	@GetMapping("")
 	public List<Post> getAllPosts() {
 		try {
@@ -35,7 +34,6 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
 		}
 	}
-	// todo: get all posts from a user with user ID
 	@GetMapping("/user/{userId}")
 	public List<Post> getAllPostsFromUser(@PathVariable int userId) {
 		try {
@@ -44,7 +42,6 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
 		}
 	}
-	// todo: get one post by post ID
 	@GetMapping("/{postId}")
 	public Post getPostById(@PathVariable int postId) {
 		try {
@@ -54,7 +51,6 @@ public class PostController {
 		}
 	}
 
-	// todo: add a post
 	@PostMapping("")
 	public Post addPost(@RequestBody Post post, Principal principal) {
 		try {
@@ -71,7 +67,6 @@ public class PostController {
 		}
 	}
 
-	// todo: update a post
 	@PutMapping("/{postId}")
 	public void updateStory(@RequestBody Post updatedPost, @PathVariable int postId, Principal principal) {
 		try {
@@ -82,7 +77,7 @@ public class PostController {
 
 			Post post = postDao.getById(postId);
 
-			// Verify post ID exists and it belongs to user logged in
+			// Verify post exists and it belongs to user logged in
 			if(post != null && userId == post.getUserId()) {
 				updatedPost.setUserId(userId);
 				updatedPost.setPostId(postId);
@@ -95,6 +90,24 @@ public class PostController {
 		}
 	}
 
-	// todo: delete a post
+	@DeleteMapping("/{postId}")
+	public void deletePost(@PathVariable int postId, Principal principal) {
+		try {
+			// Get the ID of the user that is logged in
+			User user = userDao.getByUsername(principal.getName());
+			int userId = user.getId();
+
+			Post post = postDao.getById(postId);
+
+			// Verify post exists and it belongs to the user logged in
+			if(post != null && userId == post.getUserId()) {
+				postDao.delete(postId);
+			} else {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			}
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
 
 }
