@@ -40,7 +40,7 @@ public class ProfileController {
 	}
 
 	// todo: Update profile method
-	@PutMapping("/{profileId}")
+	@PutMapping("")
 	public void updateProfile(@RequestBody Profile profile, Principal principal) {
 		try {
 			// Get user ID of the user that is logged in
@@ -51,6 +51,7 @@ public class ProfileController {
 			profileDao.update(profile, userId);
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+//			throw new RuntimeException(e);
 		}
 	}
 }

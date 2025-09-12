@@ -72,12 +72,13 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
 	@Override
 	public void update(Profile profile, int userId) {
 		String query = """
+				UPDATE profiles
 				SET first_name = ?,
 				last_name = ?,
 				email = ?,
 				github_link = ?,
 				city = ?,
-				state = ?,
+				state = ?
 				WHERE user_id = ?;
 				""";
 
