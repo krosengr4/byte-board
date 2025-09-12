@@ -5,10 +5,7 @@ import com.pluralsight.byteboard.data.UserDao;
 import com.pluralsight.byteboard.models.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -37,6 +34,15 @@ public class PostController {
 		}
 	}
 	// todo: get all posts from a user with user ID
+	@GetMapping("/user/{userId}")
+	public List<Post> getAllPostsFromUser(@PathVariable int userId) {
+		try {
+			return postDao.getByUserId(userId);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
+
 
 	// todo: get one post by post ID
 
