@@ -45,6 +45,14 @@ public class CommentController {
 	}
 
 	// todo: get one comment by its ID
+	@GetMapping("/{commentId}")
+	public Comment getCommentById(@PathVariable int commentId) {
+		try {
+			return commentDao.getById(commentId);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops, something went wrong...");
+		}
+	}
 
 	// todo: add a comment
 
