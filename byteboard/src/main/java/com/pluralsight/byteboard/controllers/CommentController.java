@@ -76,6 +76,28 @@ public class CommentController {
 	}
 
 	// todo: update a comment
+	@PutMapping("/{commentId}")
+	public void updateComment(@PathVariable int commentId, @RequestBody Comment updatedComment, Principal principal) {
+		try {
+			// Get the ID of the user that is logged in
+			User user = userDao.getByUsername(principal.getName());
+			int userId = user.getId();
+
+			Comment comment = commentDao.getById(commentId);
+
+			// Verify comment
+			if(comment != null && userId == comment.getUserId()) {
+				updatedComment.setUserId(userId);
+				updatedComment.setCommentId(commentId);
+				updatedComment.setPostId(comment.getPostId());
+			} else {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			}
+			
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "The server could not get that...");
+		}
+	}
 
 	// todo: delete a comment
 }
