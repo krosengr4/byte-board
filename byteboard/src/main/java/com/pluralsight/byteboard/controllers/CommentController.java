@@ -1,16 +1,26 @@
 package com.pluralsight.byteboard.controllers;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.pluralsight.byteboard.data.CommentDao;
 import com.pluralsight.byteboard.data.UserDao;
 import com.pluralsight.byteboard.models.Comment;
 import com.pluralsight.byteboard.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.security.Principal;
-import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -68,6 +78,7 @@ public class CommentController {
 			comment.setUserId(userId);
 			comment.setPostId(postId);
 			comment.setAuthor(username);
+			comment.setDatePosted(LocalDateTime.now());
 
 			return commentDao.add(comment);
 		} catch(Exception e) {
@@ -89,7 +100,11 @@ public class CommentController {
 			if(comment != null && userId == comment.getUserId()) {
 				updatedComment.setUserId(userId);
 				updatedComment.setCommentId(commentId);
+				updatedComment.setAuthor(comment.getAuthor());
 				updatedComment.setPostId(comment.getPostId());
+				updatedComment.setDatePosted(LocalDateTime.now());
+
+				commentDao.update(updatedComment, updatedComment.getCommentId());
 			} else {
 				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 			}
@@ -107,7 +122,7 @@ public class CommentController {
 			User user = userDao.getByUsername(principal.getName());
 			int userId = user.getId();
 
-			Comment comment = commentDao.getById(userId);
+			Comment comment = commentDao.getById(commentId);
 
 			// Verify comment
 			if(comment != null && userId == comment.getUserId()) {
@@ -116,7 +131,8 @@ public class CommentController {
 				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 			}
 		} catch(Exception e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "The server could not get that...");
+			// throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "The server could not get that...");
+			throw new RuntimeException(e);
 		}
 	}
 }
