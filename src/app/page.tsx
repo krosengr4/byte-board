@@ -77,10 +77,10 @@ export default function Home() {
             {posts.map((post) => (
               <Card key={post.post_id} hoverable>
                 <Title level={4}>{post.title}</Title>
-                <Text className="text-gray-600">by {post.username}</Text>
+                <Text className="text-gray-600">by {post.author}</Text>
                 <p className="mt-2">{post.content}</p>
                 <Text className="text-sm text-gray-400">
-                  {new Date(post.created_at).toLocaleDateString()}
+                  {new Date(post.date_posted).toLocaleDateString()}
                 </Text>
               </Card>
             ))}
