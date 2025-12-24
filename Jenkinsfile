@@ -3,7 +3,7 @@
 
       environment {
           DOCKER_IMAGE = 'krosengr4/byteboard-ui'
-          DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+          DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
       }
 
       stages {
